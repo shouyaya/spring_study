@@ -246,21 +246,32 @@ public class AnnotatedBeanDefinitionReader {
 	 * {@link BeanDefinition}, e.g. setting a lazy-init or primary flag
 	 * @since 5.0
 	 */
+
+	//Bean 定义读取器向容器注册注解Bean 定义类
 	private <T> void doRegisterBean(Class<T> beanClass, @Nullable String name,
 			@Nullable Class<? extends Annotation>[] qualifiers, @Nullable Supplier<T> supplier,
 			@Nullable BeanDefinitionCustomizer[] customizers) {
 
+		//根据指定的注解Bean 定义类，创建Spring 容器中对注解Bean 的封装的数据结构
 		AnnotatedGenericBeanDefinition abd = new AnnotatedGenericBeanDefinition(beanClass);
 		if (this.conditionEvaluator.shouldSkip(abd.getMetadata())) {
 			return;
 		}
 
 		abd.setInstanceSupplier(supplier);
+		//解析注解Bean 定义的作用域，若@Scope("prototype")，则Bean 为原型类型；
+		//若@Scope("singleton")，则Bean 为单态类型
 		ScopeMetadata scopeMetadata = this.scopeMetadataResolver.resolveScopeMetadata(abd);
 		abd.setScope(scopeMetadata.getScopeName());
+		//为注解Bean 定义生成Bean 名称
 		String beanName = (name != null ? name : this.beanNameGenerator.generateBeanName(abd, this.registry));
 
+		//处理注解Bean 定义中的通用注解
 		AnnotationConfigUtils.processCommonDefinitionAnnotations(abd);
+
+		//如果在向容器注册注解Bean 定义时，使用了额外的限定符注解，则解析限定符注解。
+		//主要是配置的关于autowiring 自动依赖注入装配的限定条件，即@Qualifier 注解
+		//Spring 自动依赖注入装配默认是按类型装配，如果使用@Qualifier 则按名称
 		if (qualifiers != null) {
 			for (Class<? extends Annotation> qualifier : qualifiers) {
 				if (Primary.class == qualifier) {
@@ -280,8 +291,11 @@ public class AnnotatedBeanDefinitionReader {
 			}
 		}
 
+		//创建一个指定Bean 名称的Bean 定义对象，封装注解Bean 定义类数据
 		BeanDefinitionHolder definitionHolder = new BeanDefinitionHolder(abd, beanName);
+		//根据注解Bean 定义类中配置的作用域，创建相应的代理对象
 		definitionHolder = AnnotationConfigUtils.applyScopedProxyMode(scopeMetadata, definitionHolder, this.registry);
+		//向IOC 容器注册注解Bean 类定义对象
 		BeanDefinitionReaderUtils.registerBeanDefinition(definitionHolder, this.registry);
 	}
 

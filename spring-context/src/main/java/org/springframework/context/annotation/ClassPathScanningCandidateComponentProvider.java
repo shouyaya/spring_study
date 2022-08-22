@@ -94,8 +94,12 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 
 	private String resourcePattern = DEFAULT_RESOURCE_PATTERN;
 
+
+	//保存过滤规则要包含的注解，即Spring 默认的@Component、@Repository、@Service、
+	//@Controller 注解的Bean，以及JavaEE6 的@ManagedBean 和JSR-330 的@Named 注解
 	private final List<TypeFilter> includeFilters = new ArrayList<>();
 
+	//保存过滤规则要排除的注解
 	private final List<TypeFilter> excludeFilters = new ArrayList<>();
 
 	@Nullable
@@ -485,11 +489,13 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	 * @return whether the class qualifies as a candidate component
 	 */
 	protected boolean isCandidateComponent(MetadataReader metadataReader) throws IOException {
+		//如果读取的类的注解在排除注解过滤规则中，返回false
 		for (TypeFilter tf : this.excludeFilters) {
 			if (tf.match(metadataReader, getMetadataReaderFactory())) {
 				return false;
 			}
 		}
+		//如果读取的类的注解在包含的注解的过滤规则中，则返回ture
 		for (TypeFilter tf : this.includeFilters) {
 			if (tf.match(metadataReader, getMetadataReaderFactory())) {
 				return isConditionMatch(metadataReader);

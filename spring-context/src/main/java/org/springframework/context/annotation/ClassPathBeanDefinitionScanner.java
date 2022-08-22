@@ -81,6 +81,7 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 	 * @param registry the {@code BeanFactory} to load bean definitions into, in the form
 	 * of a {@code BeanDefinitionRegistry}
 	 */
+	//创建一个类路径Bean 定义扫描器
 	public ClassPathBeanDefinitionScanner(BeanDefinitionRegistry registry) {
 		this(registry, true);
 	}
@@ -109,6 +110,9 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 	 * @see #setResourceLoader
 	 * @see #setEnvironment
 	 */
+	//为容器创建一个类路径Bean 定义扫描器，并指定是否使用默认的扫描过滤规则。
+	//即Spring 默认扫描配置：@Component、@Repository、@Service、@Controller
+	//注解的Bean，同时也支持JavaEE6 的@ManagedBean 和JSR-330 的@Named 注解
 	public ClassPathBeanDefinitionScanner(BeanDefinitionRegistry registry, boolean useDefaultFilters) {
 		this(registry, useDefaultFilters, getOrCreateEnvironment(registry));
 	}
@@ -160,6 +164,7 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 			Environment environment, @Nullable ResourceLoader resourceLoader) {
 
 		Assert.notNull(registry, "BeanDefinitionRegistry must not be null");
+		//为容器设置加载Bean 定义的注册器
 		this.registry = registry;
 
 		if (useDefaultFilters) {
