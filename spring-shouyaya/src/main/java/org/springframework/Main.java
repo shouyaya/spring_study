@@ -13,8 +13,8 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  */
 public class Main {
 	public static void main(String[] args) {
-		ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml");
-//		AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext("org.springframework.bean");
+//		ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml");
+		AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext("org.springframework.bean");
 //		AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext(HelloWorld.class);
 		HelloWorld helloWorld = applicationContext.getBean(HelloWorld.class);
 		helloWorld.hello();

@@ -278,22 +278,30 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 		Assert.notEmpty(basePackages, "At least one base package must be specified");
 		Set<BeanDefinitionHolder> beanDefinitions = new LinkedHashSet<>();
 		for (String basePackage : basePackages) {
+			//调用父类 ClassPathScanningCandidateComponentProvider 的方法 
+			//扫描给定类路径，获取符合条件的 Bean 定义
 			Set<BeanDefinition> candidates = findCandidateComponents(basePackage);
 			for (BeanDefinition candidate : candidates) {
+				//获取 Bean 定义类中@Scope 注解的值，即获取 Bean 的作用域
 				ScopeMetadata scopeMetadata = this.scopeMetadataResolver.resolveScopeMetadata(candidate);
 				candidate.setScope(scopeMetadata.getScopeName());
 				String beanName = this.beanNameGenerator.generateBeanName(candidate, this.registry);
+				//如果扫描到的 Bean 不是 Spring 的注解 Bean，则为 Bean 设置默认值， 
+				// 设置 Bean 的自动依赖注入装配属性等
 				if (candidate instanceof AbstractBeanDefinition) {
 					postProcessBeanDefinition((AbstractBeanDefinition) candidate, beanName);
 				}
 				if (candidate instanceof AnnotatedBeanDefinition) {
 					AnnotationConfigUtils.processCommonDefinitionAnnotations((AnnotatedBeanDefinition) candidate);
 				}
+				//根据 Bean 名称检查指定的 Bean 是否需要在容器中注册，或者在容器中冲突
 				if (checkCandidate(beanName, candidate)) {
 					BeanDefinitionHolder definitionHolder = new BeanDefinitionHolder(candidate, beanName);
+					//根据注解中配置的作用域，为 Bean 应用相应的代理模式
 					definitionHolder =
 							AnnotationConfigUtils.applyScopedProxyMode(scopeMetadata, definitionHolder, this.registry);
 					beanDefinitions.add(definitionHolder);
+					//向容器注册扫描到的 Bean
 					registerBeanDefinition(definitionHolder, this.registry);
 				}
 			}
