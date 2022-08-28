@@ -1,4 +1,4 @@
-package org.springframework;
+package org.springframework.main;
 
 import org.springframework.bean.HelloWorld;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -16,7 +16,7 @@ public class Main {
 //		ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml");
 		AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext("org.springframework.bean");
 //		AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext(HelloWorld.class);
-		HelloWorld helloWorld = applicationContext.getBean(HelloWorld.class);
+		HelloWorld helloWorld = applicationContext.getBean("helloWorld",HelloWorld.class);
 		helloWorld.hello();
 	}
 }

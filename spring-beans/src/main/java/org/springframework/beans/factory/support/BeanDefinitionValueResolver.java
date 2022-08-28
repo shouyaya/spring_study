@@ -108,10 +108,13 @@ class BeanDefinitionValueResolver {
 	public Object resolveValueIfNecessary(Object argName, @Nullable Object value) {
 		// We must check each value to see whether it requires a runtime reference
 		// to another bean to be resolved.
+		//对引用类型的属性进行解析
 		if (value instanceof RuntimeBeanReference) {
 			RuntimeBeanReference ref = (RuntimeBeanReference) value;
+			//调用引用类型属性的解析方法
 			return resolveReference(argName, ref);
 		}
+		//对属性值是引用容器中另一个Bean 名称的解析
 		else if (value instanceof RuntimeBeanNameReference) {
 			String refName = ((RuntimeBeanNameReference) value).getBeanName();
 			refName = String.valueOf(doEvaluate(refName));
@@ -121,11 +124,13 @@ class BeanDefinitionValueResolver {
 			}
 			return refName;
 		}
+		//从容器中获取指定名称的Bean
 		else if (value instanceof BeanDefinitionHolder) {
 			// Resolve BeanDefinitionHolder: contains BeanDefinition with name and aliases.
 			BeanDefinitionHolder bdHolder = (BeanDefinitionHolder) value;
 			return resolveInnerBean(argName, bdHolder.getBeanName(), bdHolder.getBeanDefinition());
 		}
+		//对Bean 类型属性的解析，主要是Bean 中的内部类
 		else if (value instanceof BeanDefinition) {
 			// Resolve plain BeanDefinition, without contained name: use dummy name.
 			BeanDefinition bd = (BeanDefinition) value;

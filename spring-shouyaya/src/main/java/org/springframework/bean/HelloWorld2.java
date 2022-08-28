@@ -1,18 +1,25 @@
 package org.springframework.bean;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
+/**
+ * <B>主类名称：</B>  <BR>
+ * <B>概要说明：</B>  <BR>
+ *
+ * @author zhiyong.yao
+ * @since 2022-08-27 15:35
+ */
 @Component
-public class HelloWorld {
+@Lazy
+public class HelloWorld2 {
 	@Autowired
-	private HelloWorld2 helloWorld2;
+	private HelloWorld helloWorld;
 	private String user;
 
-	public HelloWorld() {
+	public HelloWorld2() {
 		System.out.println("HelloWorld's constructor...");
 	}
 
@@ -21,7 +28,7 @@ public class HelloWorld {
 		this.user = user;
 	}
 
-	public HelloWorld(String user) {
+	public HelloWorld2(String user) {
 		this.user = user;
 	}
 

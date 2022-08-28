@@ -93,11 +93,17 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 	 * @throws BeanCreationException if FactoryBean object creation failed
 	 * @see org.springframework.beans.factory.FactoryBean#getObject()
 	 */
+	//Bean 工厂生产Bean 实例对象
 	protected Object getObjectFromFactoryBean(FactoryBean<?> factory, String beanName, boolean shouldPostProcess) {
+		//Bean 工厂是单态模式，并且Bean 工厂缓存中存在指定名称的Bean 实例对象
 		if (factory.isSingleton() && containsSingleton(beanName)) {
+			//多线程同步，以防止数据不一致
 			synchronized (getSingletonMutex()) {
+				//直接从Bean 工厂缓存中获取指定名称的Bean 实例对象
 				Object object = this.factoryBeanObjectCache.get(beanName);
+				//Bean 工厂缓存中没有指定名称的实例对象，则生产该实例对象
 				if (object == null) {
+					//调用Bean 工厂的getObject 方法生产指定Bean 的实例对象
 					object = doGetObjectFromFactoryBean(factory, beanName);
 					// Only post-process and store if not put there already during getObject() call above
 					// (e.g. because of circular reference processing triggered by custom getBean calls)
@@ -123,6 +129,7 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 								afterSingletonCreation(beanName);
 							}
 						}
+						//将生产的实例对象添加到Bean 工厂缓存中
 						if (containsSingleton(beanName)) {
 							this.factoryBeanObjectCache.put(beanName, object);
 						}
@@ -153,6 +160,7 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 	 * @throws BeanCreationException if FactoryBean object creation failed
 	 * @see org.springframework.beans.factory.FactoryBean#getObject()
 	 */
+	//调用Bean 工厂的getObject 方法生产指定Bean 的实例对象
 	private Object doGetObjectFromFactoryBean(FactoryBean<?> factory, String beanName) throws BeanCreationException {
 		Object object;
 		try {

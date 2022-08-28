@@ -106,6 +106,7 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
 	public Object instantiate(RootBeanDefinition bd, @Nullable String beanName, BeanFactory owner,
 			final Constructor<?> ctor, Object... args) {
 
+		//如果Bean 定义中没有方法覆盖，则就不需要CGLib 父类类的方法
 		if (!bd.hasMethodOverrides()) {
 			if (System.getSecurityManager() != null) {
 				// use own privileged to change accessibility (when security is on)
@@ -114,9 +115,12 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
 					return null;
 				});
 			}
+			//使用BeanUtils 实例化，通过反射机制调用”构造方法.newInstance(arg)”来进行实例化
 			return BeanUtils.instantiateClass(ctor, args);
 		}
 		else {
+			// Must generate CGLib subclass.
+			//使用CGLib 来实例化对象
 			return instantiateWithMethodInjection(bd, beanName, owner, ctor, args);
 		}
 	}
