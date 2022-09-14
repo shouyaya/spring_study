@@ -1,21 +1,28 @@
 package org.springframework.bean;
 
 
+import javax.annotation.PostConstruct;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.DependsOn;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 @Component
-public class HelloWorld {
+public class HelloWorld implements InitializingBean {
 	@Autowired
 	private HelloWorld2 helloWorld2;
 	private String user;
 
+	
 	public HelloWorld() {
 		System.out.println("HelloWorld's constructor...");
 	}
+	
+	@PostConstruct
+	public void postConstruct (){
+		System.out.println("@PostConstruct before");
+	}
 
+	
 	public void setUser(String user) {
 		System.out.println("setUser:" + user);
 		this.user = user;
@@ -29,4 +36,8 @@ public class HelloWorld {
 		System.out.println("Hello: " + this.user);
 	}
 
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		System.out.println("HelloWorld : before");
+	}
 }
